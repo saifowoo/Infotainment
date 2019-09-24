@@ -19,15 +19,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 00000bd6  00000000  00000000  00002f8c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00001023  00000000  00000000  00003b62  2**0
+  8 .debug_line   00001028  00000000  00000000  00003b62  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000338  00000000  00000000  00004b88  2**2
+  9 .debug_frame  00000338  00000000  00000000  00004b8c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000a1a  00000000  00000000  00004ec0  2**0
+ 10 .debug_str    00000a1a  00000000  00000000  00004ec4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000e5f  00000000  00000000  000058da  2**0
+ 11 .debug_loc    00000e5f  00000000  00000000  000058de  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000100  00000000  00000000  00006739  2**0
+ 12 .debug_ranges 00000100  00000000  00000000  0000673d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1392,10 +1392,10 @@ void Get_Key(void)
  830:	08 95       	ret
 
 00000832 <Keypad_Init>:
-extern uint8 LinesConfig[NUMBER_OF_LINES];
-
-extern const uint8 sg_keypad_mapping[NUMBER_OF_ROWS][NUMBER_OF_LINES];
-
+ *		Inputs:			None
+ *		Outputs:		None
+ * Return:			None
+ *******************************************************************************/
 void Keypad_Init (void)
 {
  832:	ef 92       	push	r14
@@ -1414,8 +1414,8 @@ void Keypad_Init (void)
  84c:	f0 2d       	mov	r31, r0
  84e:	8e 01       	movw	r16, r28
     uint8 InitLoopIndex = 0;
-    //rows are outputs
-    //set outputs in no state (1)
+    /*Rows are outputs*/
+    /*Set outputs in no state (1)*/
     for (InitLoopIndex = 0 ; InitLoopIndex < NUMBER_OF_ROWS ; InitLoopIndex++)
     {
         DIO_SetPinDirection(RowsConfig[InitLoopIndex],OUTPUT);
@@ -1430,8 +1430,8 @@ void Keypad_Init (void)
 void Keypad_Init (void)
 {
     uint8 InitLoopIndex = 0;
-    //rows are outputs
-    //set outputs in no state (1)
+    /*Rows are outputs*/
+    /*Set outputs in no state (1)*/
     for (InitLoopIndex = 0 ; InitLoopIndex < NUMBER_OF_ROWS ; InitLoopIndex++)
  862:	ce 15       	cp	r28, r14
  864:	df 05       	cpc	r29, r15
@@ -1446,8 +1446,8 @@ void Keypad_Init (void)
  876:	f0 2d       	mov	r31, r0
  878:	8e 01       	movw	r16, r28
     }
-    //lines are input
-    //activate pull up inputs
+    /*Lines are input*/
+    /*Activate pull up inputs*/
     for (InitLoopIndex = 0 ; InitLoopIndex < NUMBER_OF_LINES ; InitLoopIndex++)
     {
         DIO_SetPinDirection(LinesConfig[InitLoopIndex],INPUT);
@@ -1462,8 +1462,8 @@ void Keypad_Init (void)
         DIO_SetPinDirection(RowsConfig[InitLoopIndex],OUTPUT);
         DIO_WritePin(RowsConfig[InitLoopIndex],HIGH);
     }
-    //lines are input
-    //activate pull up inputs
+    /*Lines are input*/
+    /*Activate pull up inputs*/
     for (InitLoopIndex = 0 ; InitLoopIndex < NUMBER_OF_LINES ; InitLoopIndex++)
  88c:	ce 15       	cp	r28, r14
  88e:	df 05       	cpc	r29, r15
@@ -1482,7 +1482,10 @@ void Keypad_Init (void)
  89e:	08 95       	ret
 
 000008a0 <Keypad_GetKey>:
-
+ *		Inputs:			None
+ *		Outputs:		None
+ * Return:			Pressed Key
+ *******************************************************************************/
 uint8 Keypad_GetKey (void)
 {
  8a0:	bf 92       	push	r11
@@ -1494,17 +1497,17 @@ uint8 Keypad_GetKey (void)
  8ac:	1f 93       	push	r17
  8ae:	cf 93       	push	r28
  8b0:	df 93       	push	r29
+    static uint8 CapturedInput = 0;
     static uint8 row = 0;
     static uint8 line = NO_VALID_IN;
     uint8 result = NO_VALID_IN;
-    //row = 0;
-    //line = NO_VALID_IN;
+    /*Check if we have captured */
     if (CapturedInput == 0)
  8b2:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <CapturedInput.1609>
  8b6:	81 11       	cpse	r24, r1
  8b8:	48 c0       	rjmp	.+144    	; 0x94a <Keypad_GetKey+0xaa>
     {
-        //loop on rows
+        /*Loop on rows*/
         for(row = 0 ; row < NUMBER_OF_ROWS ; row++)
  8ba:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <row.1610>
  8be:	0f 2e       	mov	r0, r31
@@ -1515,7 +1518,7 @@ uint8 Keypad_GetKey (void)
  8c8:	f0 2d       	mov	r31, r0
  8ca:	3c c0       	rjmp	.+120    	; 0x944 <Keypad_GetKey+0xa4>
         {
-            //set outputs in no state (1)
+            /*Set Rows in no state (1)*/
             for (GetKeyLoopIndex = 0 ; GetKeyLoopIndex < NUMBER_OF_ROWS ; GetKeyLoopIndex++)
             {
               DIO_WritePin(RowsConfig[GetKeyLoopIndex],HIGH);
@@ -1523,10 +1526,10 @@ uint8 Keypad_GetKey (void)
  8ce:	89 91       	ld	r24, Y+
  8d0:	0e 94 49 00 	call	0x92	; 0x92 <DIO_WritePin>
     {
-        //loop on rows
+        /*Loop on rows*/
         for(row = 0 ; row < NUMBER_OF_ROWS ; row++)
         {
-            //set outputs in no state (1)
+            /*Set Rows in no state (1)*/
             for (GetKeyLoopIndex = 0 ; GetKeyLoopIndex < NUMBER_OF_ROWS ; GetKeyLoopIndex++)
  8d4:	ce 15       	cp	r28, r14
  8d6:	df 05       	cpc	r29, r15
@@ -1534,7 +1537,7 @@ uint8 Keypad_GetKey (void)
             {
               DIO_WritePin(RowsConfig[GetKeyLoopIndex],HIGH);
             }
-            //set the numbered row in output state (0)
+            /*Set the numbered row in output state (0)*/
             DIO_WritePin(RowsConfig[row],LOW);
  8da:	e0 91 00 01 	lds	r30, 0x0100	; 0x800100 <row.1610>
  8de:	f0 e0       	ldi	r31, 0x00	; 0
@@ -1547,9 +1550,10 @@ uint8 Keypad_GetKey (void)
  8ee:	10 e0       	ldi	r17, 0x00	; 0
  8f0:	c0 e0       	ldi	r28, 0x00	; 0
  8f2:	d0 e0       	ldi	r29, 0x00	; 0
-            //check the inputs
+            /*Check the inputs*/
             for (GetKeyLoopIndex = 0 ; GetKeyLoopIndex < NUMBER_OF_LINES ; GetKeyLoopIndex++)
             {
+                /*Check if we have any inputs on the selected push button*/
                 if(DIO_ReadPin(LinesConfig[GetKeyLoopIndex]) == VALID_IN)
  8f4:	6e 01       	movw	r12, r28
  8f6:	f8 01       	movw	r30, r16
@@ -1559,9 +1563,11 @@ uint8 Keypad_GetKey (void)
  900:	81 11       	cpse	r24, r1
  902:	14 c0       	rjmp	.+40     	; 0x92c <Keypad_GetKey+0x8c>
                 {
-                  line = GetKeyLoopIndex;
+                    /*get key line*/
+                    line = GetKeyLoopIndex;
  904:	c0 93 63 00 	sts	0x0063, r28	; 0x800063 <line.1611>
-                  CapturedInput = sg_keypad_mapping[row][line];
+                    /*get key result*/
+                    CapturedInput = sg_keypad_mapping[row][line];
  908:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <row.1610>
  90c:	90 e0       	ldi	r25, 0x00	; 0
  90e:	9c 01       	movw	r18, r24
@@ -1587,18 +1593,18 @@ uint8 Keypad_GetKey (void)
  92c:	21 96       	adiw	r28, 0x01	; 1
               DIO_WritePin(RowsConfig[GetKeyLoopIndex],HIGH);
             }
-            //set the numbered row in output state (0)
+            /*Set the numbered row in output state (0)*/
             DIO_WritePin(RowsConfig[row],LOW);
-            //check the inputs
+            /*Check the inputs*/
             for (GetKeyLoopIndex = 0 ; GetKeyLoopIndex < NUMBER_OF_LINES ; GetKeyLoopIndex++)
  92e:	c3 30       	cpi	r28, 0x03	; 3
  930:	d1 05       	cpc	r29, r1
  932:	01 f7       	brne	.-64     	; 0x8f4 <Keypad_GetKey+0x54>
-    //row = 0;
-    //line = NO_VALID_IN;
+    uint8 result = NO_VALID_IN;
+    /*Check if we have captured */
     if (CapturedInput == 0)
     {
-        //loop on rows
+        /*Loop on rows*/
         for(row = 0 ; row < NUMBER_OF_ROWS ; row++)
  934:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <row.1610>
  938:	8f 5f       	subi	r24, 0xFF	; 255
@@ -1623,6 +1629,7 @@ uint8 Keypad_GetKey (void)
  956:	40 c0       	rjmp	.+128    	; 0x9d8 <Keypad_GetKey+0x138>
         {
             case RELEASED:
+            /*Check if we have any inputs on the selected push button*/
             if(DIO_ReadPin(LinesConfig[line]) == VALID_IN)
  958:	e0 91 63 00 	lds	r30, 0x0063	; 0x800063 <line.1611>
  95c:	f0 e0       	ldi	r31, 0x00	; 0
@@ -1633,17 +1640,20 @@ uint8 Keypad_GetKey (void)
  968:	81 11       	cpse	r24, r1
  96a:	0c c0       	rjmp	.+24     	; 0x984 <Keypad_GetKey+0xe4>
             {
-	            sampler++;
+	            /*Increament sampler value*/
+                sampler++;
  96c:	80 91 ff 00 	lds	r24, 0x00FF	; 0x8000ff <sampler.1608>
  970:	8f 5f       	subi	r24, 0xFF	; 255
  972:	80 93 ff 00 	sts	0x00FF, r24	; 0x8000ff <sampler.1608>
+                /*Cheak if sampler value less than 5*/
 	            if(sampler < 5)
  976:	85 30       	cpi	r24, 0x05	; 5
  978:	88 f1       	brcs	.+98     	; 0x9dc <Keypad_GetKey+0x13c>
 	            {/*Do Nothing*/}
 	            else
 	            {
-		            state = PRESSED;
+		            /*Change state to pressed*/
+                    state = PRESSED;
  97a:	81 e0       	ldi	r24, 0x01	; 1
  97c:	80 93 62 00 	sts	0x0062, r24	; 0x800062 <state.1607>
     static uint8 state = RELEASED;
@@ -1654,12 +1664,12 @@ uint8 Keypad_GetKey (void)
     uint8 result = NO_VALID_IN;
  980:	8f ef       	ldi	r24, 0xFF	; 255
  982:	2f c0       	rjmp	.+94     	; 0x9e2 <Keypad_GetKey+0x142>
-		            state = PRESSED;
 	            }
             }
             else
             {
-	            sampler = 0;
+	            /*Reset sampler value*/
+                sampler = 0;
  984:	10 92 ff 00 	sts	0x00FF, r1	; 0x8000ff <sampler.1608>
     static uint8 state = RELEASED;
     static uint8 sampler = 0;
@@ -1669,11 +1679,11 @@ uint8 Keypad_GetKey (void)
     uint8 result = NO_VALID_IN;
  988:	8f ef       	ldi	r24, 0xFF	; 255
  98a:	2b c0       	rjmp	.+86     	; 0x9e2 <Keypad_GetKey+0x142>
-	            sampler = 0;
             }
             break;
 			
 			case PRESSED:
+            /*Check if we have any inputs on the selected push button*/
             if(DIO_ReadPin(LinesConfig[line]) == VALID_IN)
  98c:	e0 91 63 00 	lds	r30, 0x0063	; 0x800063 <line.1611>
  990:	f0 e0       	ldi	r31, 0x00	; 0
@@ -1684,6 +1694,7 @@ uint8 Keypad_GetKey (void)
  99c:	81 11       	cpse	r24, r1
  99e:	04 c0       	rjmp	.+8      	; 0x9a8 <Keypad_GetKey+0x108>
             {
+                /*Reset sampler value*/
                 sampler = 0;
  9a0:	10 92 ff 00 	sts	0x00FF, r1	; 0x8000ff <sampler.1608>
     static uint8 state = RELEASED;
@@ -1694,21 +1705,23 @@ uint8 Keypad_GetKey (void)
     uint8 result = NO_VALID_IN;
  9a4:	8f ef       	ldi	r24, 0xFF	; 255
  9a6:	1d c0       	rjmp	.+58     	; 0x9e2 <Keypad_GetKey+0x142>
-            {
                 sampler = 0;
             }
             else
             {
+                /*Increament sampler value*/
                 sampler++;
  9a8:	80 91 ff 00 	lds	r24, 0x00FF	; 0x8000ff <sampler.1608>
  9ac:	8f 5f       	subi	r24, 0xFF	; 255
  9ae:	80 93 ff 00 	sts	0x00FF, r24	; 0x8000ff <sampler.1608>
+                /*Cheak if sampler value less than 5*/
                 if(sampler < 5)
  9b2:	85 30       	cpi	r24, 0x05	; 5
  9b4:	a8 f0       	brcs	.+42     	; 0x9e0 <Keypad_GetKey+0x140>
                 {/*Do Nothing*/}
                 else
                 {
+                    /*Reset all static variables*/
                     result = CapturedInput;
  9b6:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <CapturedInput.1609>
                     sampler = 0;
@@ -1720,6 +1733,7 @@ uint8 Keypad_GetKey (void)
                     line = NO_VALID_IN;
  9c6:	9f ef       	ldi	r25, 0xFF	; 255
  9c8:	90 93 63 00 	sts	0x0063, r25	; 0x800063 <line.1611>
+                    /*Change state to released*/
                     state = RELEASED;
  9cc:	92 e0       	ldi	r25, 0x02	; 2
  9ce:	90 93 62 00 	sts	0x0062, r25	; 0x800062 <state.1607>
@@ -1737,10 +1751,10 @@ uint8 Keypad_GetKey (void)
  9dc:	8f ef       	ldi	r24, 0xFF	; 255
  9de:	01 c0       	rjmp	.+2      	; 0x9e2 <Keypad_GetKey+0x142>
  9e0:	8f ef       	ldi	r24, 0xFF	; 255
-            }
-            break;
         }
     }
+    /*If we have key pressed -> Return key*
+     *If we have no inputs -> Return 0xFF */
     return result;
 }
  9e2:	df 91       	pop	r29

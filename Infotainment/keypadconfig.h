@@ -1,5 +1,3 @@
-/*
- * keypadconfig.h
  /*******************************************************************************
  * File Name	: keypadconfig.h                                               *
  * Description	: Keypad configuration header file for user interface          *
@@ -18,9 +16,12 @@
 #include "typedefs.h"
 /*******************************************************************************/
 
+
+
 /*******************************************************************************
  *                      Configuration Preprocessor Macros                      *
  *******************************************************************************/
+
 /*Please Enter Number Of Rows*/
 #define NUMBER_OF_ROWS			3
 /*Please Enter Number Of Lines(Columns)*/
@@ -34,7 +35,5 @@
 #define LINE1		22
 #define LINE2		23
 /*******************************************************************************/
-
-
 
 #endif /* KEYPADCONFIG_H_ */
